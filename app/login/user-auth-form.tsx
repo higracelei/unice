@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import {createClientComponentClient} from '@supabase/auth-helpers-nextjs'
+// import {createClientComponentClient} from '@supabase/auth-helpers-nextjs'
+import supabase from "@/utils/supabaseClient"
 import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -20,7 +21,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   const router = useRouter()
 
-  const supabase = createClientComponentClient()
+  // const supabase = createClientComponentClient()
 
   async function onSubmit(event: React.SyntheticEvent) {
     console.log("onSubmit clicked: ", email)
