@@ -27,7 +27,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     try {
       event.preventDefault()
       setIsLoading(true)
-      let { data, error } = await supabase.auth.signInWithOtp({ email})
+      let { data, error } = await supabase.auth.signInWithOtp({ email,
+        options: {
+          emailRedirectTo: `${location.origin}/auth/callback`
+        }
+      })
+      router.refresh();
       if (error) throw error
       alert('请检查您的电子邮件以获取登录链接!')
       console.log("success")
