@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-// import {createClientComponentClient} from '@supabase/auth-helpers-nextjs'
 import supabase from "@/utils/supabaseClient"
 import { useRouter } from 'next/navigation';
 
@@ -17,11 +16,19 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [email, setEmail] = useState<string>(''); // State to store the entered email
-
+  const [email, setEmail] = useState<string>(''); 
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter()
 
-  // const supabase = createClientComponentClient()
+  useEffect(() => {
+    async function getUser() {
+      const {data: {user}} = await supabase.auth.getUser();
+      setLoading(false)
+      setUser(data.user)
+    }
+    getUser();
+  }, [])
 
   async function onSubmit(event: React.SyntheticEvent) {
     console.log("onSubmit clicked: ", email)
@@ -32,7 +39,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         options: {
           emailRedirectTo: `${location.origin}/auth/callback`
         }
-      })
+      });
+      setUser(data.user)
       router.refresh();
       if (error) throw error
       alert('请检查您的电子邮件以获取登录链接!')
@@ -43,6 +51,28 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.log('Error logging out:', error.message)
+    router.refresh();
+    setUser(null)
+  }
+
+  console.log({loading, user})
+  if (loading) return <p>Loading ...</p>
+
+  if (user) {
+    return <div className="text-center"> 
+      <div>
+       <h1> You are already logged in </h1>
+       <button
+        onClick = {handleLogout}
+       > Logout </button>
+      </div>
+      
+    </div>
   }
 
   return (
