@@ -14,9 +14,10 @@ import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserForgotPasswordForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [email, setEmail] = useState<string>(''); 
+  const [password, setPassword] = useState<string>('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter()
@@ -25,25 +26,24 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     async function getUser() {
       const {data: {user}} = await supabase.auth.getUser();
       setLoading(false)
-      setUser(data.user)
+      // setUser(data.user)
     }
     getUser();
   }, [])
 
   async function onSubmit(event: React.SyntheticEvent) {
+    // handle sign in
     console.log("onSubmit clicked: ", email)
     try {
       event.preventDefault()
       setIsLoading(true)
-      let { data, error } = await supabase.auth.signInWithOtp({ email,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback`
-        }
+      let { data, error } = await supabase.auth.signInWithPassword({ email, password,
       });
-      setUser(data.user)
+      // setUser(data.user)
       router.refresh();
+      setEmail('')
+      setPassword('')
       if (error) throw error
-      alert('请检查您的电子邮件以获取登录链接!')
       console.log("success")
     } catch (error) {
       console.log("error")
@@ -85,7 +85,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="email"
-              placeholder="name@example.com"
+              placeholder="邮箱"
               type="email"
               autoCapitalize="none"
               autoComplete="email"
@@ -99,7 +99,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            获取登录链接
+            确认
           </Button>
         </div>
       </form>
