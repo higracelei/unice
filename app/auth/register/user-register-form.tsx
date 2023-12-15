@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import supabase from "@/utils/supabaseClient"
+// import supabase from "@/utils/supabaseClient"
+import {createClientComponentClient} from "@supabase/auth-helpers-nextjs"
 import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -22,6 +23,8 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter()
+  
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     async function getUser() {
@@ -47,12 +50,14 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
     try {
       event.preventDefault()
       setIsLoading(true)
-      let { data, error } = await supabase.auth.signUp({ email, password,
+      let { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password,
         options : {
-            emailRedirectTo: `${location.origin}/auth/callback`
+          emailRedirectTo:`${location.origin}/auth/callback`
         }
       });
-      // setUser(data.user)
+      
       router.refresh();
       setEmail('')
       setPassword('')
@@ -74,7 +79,7 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
     setUser(null)
   }
 
-  console.log({loading, user})
+  // console.log({loading, user})c
   if (loading) return <p>Loading ...</p>
 
   if (user) {

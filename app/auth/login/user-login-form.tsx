@@ -38,6 +38,7 @@ export function UserLoginForm({ className, ...props }: UserAuthFormProps) {
       event.preventDefault()
       setIsLoading(true)
       let { data, error } = await supabase.auth.signInWithPassword({ email, password,
+        
       });
       // setUser(data.user)
       router.refresh();
