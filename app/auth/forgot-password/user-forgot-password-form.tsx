@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
@@ -9,33 +9,41 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-// import {createClientComponentClient} from '@supabase/auth-helpers-nextjs'
 import supabase from "@/utils/supabaseClient"
 import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserForgotPasswordForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [email, setEmail] = useState<string>(''); // State to store the entered email
-
+  const [email, setEmail] = useState<string>(''); 
+  const [password, setPassword] = useState<string>('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter()
 
-  // const supabase = createClientComponentClient()
+  useEffect(() => {
+    async function getUser() {
+      const {data: {user}} = await supabase.auth.getUser();
+      setLoading(false)
+      // setUser(data.user)
+    }
+    getUser();
+  }, [])
 
   async function onSubmit(event: React.SyntheticEvent) {
+    // handle sign in
     console.log("onSubmit clicked: ", email)
     try {
       event.preventDefault()
       setIsLoading(true)
-      let { data, error } = await supabase.auth.signInWithOtp({ email,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback`
-        }
-      })
+      let { data, error } = await supabase.auth.signInWithPassword({ email, password,
+      });
+      // setUser(data.user)
       router.refresh();
+      setEmail('')
+      setPassword('')
       if (error) throw error
-      alert('请检查您的电子邮件以获取登录链接!')
       console.log("success")
     } catch (error) {
       console.log("error")
@@ -43,6 +51,28 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.log('Error logging out:', error.message)
+    router.refresh();
+    setUser(null)
+  }
+
+  console.log({loading, user})
+  if (loading) return <p>Loading ...</p>
+
+  if (user) {
+    return <div className="text-center"> 
+      <div>
+       <h1> You are already logged in </h1>
+       <button
+        onClick = {handleLogout}
+       > Logout </button>
+      </div>
+      
+    </div>
   }
 
   return (
@@ -55,7 +85,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="email"
-              placeholder="name@example.com"
+              placeholder="邮箱"
               type="email"
               autoCapitalize="none"
               autoComplete="email"
@@ -69,7 +99,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            获取登录链接
+            确认
           </Button>
         </div>
       </form>
