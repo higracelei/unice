@@ -5,6 +5,9 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { UserLoginForm } from "@/app/auth/login/user-login-form"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -12,7 +15,13 @@ export const metadata: Metadata = {
 }
 
 
-export default function AuthenticationPage() {
+export default async function AuthenticationPage() {
+  const supabase  = createServerComponentClient({cookies})
+  const { data } = await supabase.auth.getSession();
+
+  if (data?.session) {
+    redirect('/dashboard');
+  }
   return (
     <>
       <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

@@ -46,6 +46,7 @@ export default function HomeDashboardPage() {
         />
       </div>
       <div className="hidden md:block">
+        <Menu />
         <div className="border-t">
           <div className="bg-background">
             <div className="grid lg:grid-cols-5">
