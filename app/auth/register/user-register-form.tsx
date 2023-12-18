@@ -26,14 +26,6 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
   
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    async function getUser() {
-      const {data: {user}} = await supabase.auth.getUser();
-      setLoading(false)
-      // setUser(data.user)
-    }
-    getUser();
-  }, [])
 
   async function onSubmit(event: React.SyntheticEvent) {
     // handle sign up
@@ -53,8 +45,11 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
       let { data, error } = await supabase.auth.signUp({ 
         email, 
         password,
+        // options : {
+        //   emailRedirectTo:`${location.origin}/auth/callback`
+        // }
         options : {
-          emailRedirectTo:`${location.origin}/auth/callback`
+          emailRedirectTo:`${location.origin}/dashboard`
         }
       });
       
@@ -72,27 +67,6 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
     }
   }
 
-  async function handleLogout() {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.log('Error logging out:', error.message)
-    router.refresh();
-    setUser(null)
-  }
-
-  // console.log({loading, user})c
-  if (loading) return <p>Loading ...</p>
-
-  if (user) {
-    return <div className="text-center"> 
-      <div>
-       <h1> You are already logged in </h1>
-       <button
-        onClick = {handleLogout}
-       > Logout </button>
-      </div>
-      
-    </div>
-  }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>

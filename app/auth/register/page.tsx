@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { UserRegisterForm } from "@/app/auth/register/user-register-form"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from 'next/headers'
-
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -15,8 +15,13 @@ export const metadata: Metadata = {
 }
 
 
-export default function UserRegisterPage() {
+export default async function UserRegisterPage() {
   const supabase  = createServerComponentClient({cookies})
+  const { data } = await supabase.auth.getSession();
+
+  if (data?.session) {
+    redirect('/dashboard');
+  }
   return (
     <>
       

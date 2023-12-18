@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import supabase from "@/utils/supabaseClient"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -22,21 +22,15 @@ export function UserLoginForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = useState(true);
   const router = useRouter()
 
-  useEffect(() => {
-    async function getUser() {
-      const {data: {user}} = await supabase.auth.getUser();
-      setLoading(false)
-      // setUser(data.user)
-    }
-    getUser();
-  }, [])
+  const supabase = createClientComponentClient()
 
+  
   async function onSubmit(event: React.SyntheticEvent) {
     // handle sign in
     console.log("onSubmit clicked: ", email)
     try {
       event.preventDefault()
-      setIsLoading(true)
+      // setIsLoading(true)
       let { data, error } = await supabase.auth.signInWithPassword({ email, password,
         
       });
@@ -50,7 +44,7 @@ export function UserLoginForm({ className, ...props }: UserAuthFormProps) {
       console.log("error")
       alert(error)
     } finally {
-      setIsLoading(false)
+      // setIsLoading(false)
     }
   }
 
@@ -61,8 +55,8 @@ export function UserLoginForm({ className, ...props }: UserAuthFormProps) {
     setUser(null)
   }
 
-  console.log({loading, user})
-  if (loading) return <p>Loading ...</p>
+  // console.log({loading, user})
+  // if (loading) return <p>Loading ...</p>
 
   if (user) {
     return <div className="text-center"> 
