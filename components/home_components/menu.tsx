@@ -17,7 +17,7 @@ import {
     MenubarTrigger,
   } from "@/components/ui/menubar"
   
-  import SignOut from "@/components/auth/signout"
+  import SignOut from "@/components/auth/signOut"
 
   export function Menu() {
     return (

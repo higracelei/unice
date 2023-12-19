@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserForgotPasswordForm({ className, ...props }: UserAuthFormProps) {
+export function ForgotPassword({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState<string>('');

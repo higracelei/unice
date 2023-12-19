@@ -2,22 +2,21 @@
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export default function SignOut() { 
-    console.log("SignOut called")
+export default function SignOut() {
   const supabase = createClientComponentClient();
 
   async function handleSignOut() {
-    console.log("sign out clicked");
     const { error } = await supabase.auth.signOut();
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error('ERROR:', error);
     }
   }
 
   return (
     <button type="button" className="button-inverse" onClick={handleSignOut}>
-      账号登出
+      Sign Out
     </button>
   );
 }

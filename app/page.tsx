@@ -1,7 +1,35 @@
-import React from "react";
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-    // Your component logic here
-    return <div>Unice 优来斯 Landing Page!</div>;
-};
-  
+import SignOut from '@/components/auth/signOut';
+
+export default async function Home() {
+  const supabase = createServerComponentClient({ cookies });
+  const { data } = await supabase.auth.getSession();
+
+  // if (!data?.session) {
+  //   redirect('/sign-in');
+  // }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/sign-in');
+  }
+
+  return (
+    <div className="card">
+      <h2>Welcome to Unice!</h2>
+      <br />
+      <br />
+      <Link className="button" href="/dashboard">
+        Go to dashboard
+      </Link>
+      <br />
+    </div>
+  );
+}

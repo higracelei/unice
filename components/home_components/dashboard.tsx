@@ -14,10 +14,10 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
-import { AlbumArtwork } from "../../components/home_components/album-artwork"
-import { Menu } from "../../components/home_components/menu"
-import { PodcastEmptyPlaceholder } from "../../components/home_components/podcast-empty-placeholder"
-import { Sidebar } from "../../components/home_components/sidebar"
+import { AlbumArtwork } from "./album-artwork"
+import { Menu } from "./menu"
+import { PodcastEmptyPlaceholder } from "./podcast-empty-placeholder"
+import { Sidebar } from "./sidebar"
 import { listenNowAlbums, madeForYouAlbums } from "@/data/albums"
 import { playlists } from "@/data/playlists"
 

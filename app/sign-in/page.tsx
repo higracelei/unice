@@ -1,18 +1,17 @@
-import { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
-
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { UserForgotPasswordForm } from "@/app/auth/forgot-password/user-forgot-password-form"
-
-export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
-}
+import { SignIn } from "@/components/auth/signIn"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation';
 
 
-export default function ForgotPasswordPage() {
+export default async function SignInPage() {
+  const supabase  = createServerComponentClient({cookies})
+  const { data } = await supabase.auth.getSession();
+
+  if (data?.session) {
+    redirect('/');
+  }
   return (
     <>
       <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -36,7 +35,7 @@ export default function ForgotPasswordPage() {
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
-                &ldquo;和Unice一起开启你的留学之旅吧&rdquo;
+                &ldquo;Unice Unice&rdquo;
               </p>
               <footer className="text-sm">Unice Inc</footer>
             </blockquote>
@@ -46,22 +45,27 @@ export default function ForgotPasswordPage() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                忘记密码
+                登录
               </h1>
-              <p className="text-sm text-muted-foreground">
-                我们将发送重置密码链接到您的邮箱，请注意查收
-              </p>
             </div>
-            <UserForgotPasswordForm />
+            <SignIn />
           </div>
           <br></br>
           <div className="flex flex-col space-y-2 text-center">
             <p className="px-8 text-center text-sm text-muted-foreground">
                 <Link
-                    href="/auth/login"
+                    href="/forgot-password"
                     className="underline underline-offset-4 hover:text-primary"
                 >
-                返回登录
+                忘记密码？
+                </Link>
+                </p>
+                <p className="px-8 text-center text-sm text-muted-foreground">
+                <Link
+                    href="/sign-up" 
+                    className="underline underline-offset-4 hover:text-primary"
+                >   
+                创建新的账号
                 </Link>
                 </p>
           </div>
