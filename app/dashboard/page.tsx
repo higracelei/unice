@@ -14,6 +14,7 @@ export default async function HomePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    console.log("no user redirecting to sign-in")
     redirect('/sign-in');
   }
   return (

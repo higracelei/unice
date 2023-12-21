@@ -17,7 +17,9 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  
   if (!user) {
+    console.log(user, "redirecting to sign-in")
     redirect('/sign-in');
   }
 

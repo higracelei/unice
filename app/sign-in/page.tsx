@@ -10,6 +10,7 @@ export default async function SignInPage() {
   const { data } = await supabase.auth.getSession();
 
   if (data?.session) {
+    console.log("Have session, redirecting to home")
     redirect('/');
   }
   return (

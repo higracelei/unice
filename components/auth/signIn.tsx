@@ -23,7 +23,7 @@ export function SignIn({ className, ...props }: UserAuthFormProps) {
   
   async function onSubmit(event: React.SyntheticEvent) {
     // handle sign in
-    console.log("onSubmit clicked: ", email);
+    console.log("signin onSubmit clicked: ", email);
     event.preventDefault()
     // setIsLoading(true)
     let { error } = await supabase.auth.signInWithPassword({ 
